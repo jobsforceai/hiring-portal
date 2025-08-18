@@ -58,6 +58,7 @@ type TestState = {
   jobId: string;
   assignment?: Assignment;
   assignments: UserAssignment[];
+  assignmentsFetched: boolean; // to prevent infinite loops
   answers: Record<string, string>;
   loading: boolean;
   error?: string;
@@ -84,6 +85,7 @@ export const useTestStore = create<TestState>()(
       jobId: "",
       assignment: undefined,
       assignments: [],
+      assignmentsFetched: false,
       answers: {},
       loading: false,
       error: undefined,
@@ -91,9 +93,9 @@ export const useTestStore = create<TestState>()(
       resultLoading: false,
       resultError: undefined,
 
-      setEmail: (email) => set({ email }),
+      setEmail: (email) => set({ email, assignmentsFetched: false, assignments: [] }),
       setJobId: (jobId) => set({ jobId }),
-      setAnswer: (qid, val) =>
+      setAnswer: (qid: string, val: string) =>
         set((s) => ({ answers: { ...s.answers, [qid]: val } })),
 
       startTest: async (jobId, email) => {
@@ -247,13 +249,17 @@ export const useTestStore = create<TestState>()(
           if (!res.ok) {
             throw new Error(json.message || "Failed to fetch assignments");
           }
-          set({ assignments: json.data, loading: false });
+          set({
+            assignments: json.data,
+            loading: false,
+            assignmentsFetched: true,
+          });
         } catch (error: unknown) {
           const message =
             error instanceof Error
               ? error.message
               : "Failed to fetch assignments";
-          set({ loading: false, error: message });
+          set({ loading: false, error: message, assignmentsFetched: true });
           throw error;
         }
       },
