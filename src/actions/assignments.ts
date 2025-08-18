@@ -28,7 +28,7 @@ export async function submitAssignmentAction(
     };
 
     const res = await fetch(
-      `${process.env.API_URL}/api/v1/jobs/${jobId}/submit`,
+      `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/v1/jobs/${jobId}/submit`,
       {
         method: "POST",
         headers: { "Content-Type": "application/json" },
