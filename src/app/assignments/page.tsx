@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
 import { useTestStore, UserAssignment } from "@/store/testScore";
 import { ArrowRight, CheckCircle, Clock } from "lucide-react";
 
@@ -25,18 +26,34 @@ function AssignmentCard({ assignment }: { assignment: UserAssignment }) {
     switch (assignment.submissionStatus) {
       case "graded":
         return (
-          <div className="flex items-center gap-2 text-emerald-400">
-            <CheckCircle size={16} />
-            <span>Graded</span>
-          </div>
+          <Badge
+            variant="outline"
+            className="border-emerald-500/30 bg-emerald-500/20 text-emerald-400"
+          >
+            <CheckCircle size={14} className="mr-2" />
+            Graded
+          </Badge>
         );
       case "submitted":
       case "grading":
         return (
-          <div className="flex items-center gap-2 text-yellow-400">
-            <Clock size={16} />
-            <span>In Review</span>
-          </div>
+          <Badge
+            variant="outline"
+            className="border-yellow-500/30 bg-yellow-500/20 text-yellow-400"
+          >
+            <Clock size={14} className="mr-2" />
+            In Review
+          </Badge>
+        );
+      case "pending":
+        return (
+          <Badge
+            variant="outline"
+            className="border-sky-500/30 bg-sky-500/20 text-sky-400"
+          >
+            <Clock size={14} className="mr-2" />
+            Not Started
+          </Badge>
         );
       default:
         return null;
@@ -44,20 +61,22 @@ function AssignmentCard({ assignment }: { assignment: UserAssignment }) {
   };
 
   return (
-    <Card className="text-white p-6 rounded-2xl border-white/10 bg-white/5 backdrop-blur-xl flex items-center justify-between">
-      <div>
-        <h3 className="text-lg font-semibold">{assignment.jobTitle}</h3>
-        <div className="text-sm text-white/70 mt-1">{getStatusPill()}</div>
+    <Card className="text-white p-6 rounded-2xl border-white/10 bg-white/5 backdrop-blur-xl transition-colors hover:border-white/20">
+      <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
+        <div className="flex-grow">
+          <h3 className="mb-2 text-lg font-semibold">{assignment.jobTitle}</h3>
+          {getStatusPill()}
+        </div>
+        <Button
+          onClick={handleAction}
+          className="shrink-0 bg-white/10 hover:bg-white/20"
+        >
+          {assignment.submissionStatus === "pending"
+            ? "Start Test"
+            : "View Results"}
+          <ArrowRight size={16} className="ml-2" />
+        </Button>
       </div>
-      <Button
-        onClick={handleAction}
-        className="bg-white/10 hover:bg-white/20"
-      >
-        {assignment.submissionStatus === "pending"
-          ? "Start Test"
-          : "View Results"}
-        <ArrowRight size={16} className="ml-2" />
-      </Button>
     </Card>
   );
 }

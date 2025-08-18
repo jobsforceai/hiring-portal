@@ -10,6 +10,16 @@ import { Badge } from "@/components/ui/badge";
 import { CheckCircle2, Clock, AlertCircle, ArrowLeft } from "lucide-react";
 import Link from "next/link";
 
+interface Answer {
+  questionId: string;
+  answer: string;
+  manualScore?: number;
+  notes?: string;
+  correctAnswer?: string;
+  pointsPerQuestion?: number;
+  modelAnswer?: string;
+}
+
 export default function ResultsPage({
   params,
 }: {
@@ -18,7 +28,8 @@ export default function ResultsPage({
   const { jobId } = React.use(params);
   const router = useRouter();
 
-  const { email, result, resultLoading, getResults } = useTestStore();
+  const { email, result, resultLoading, getResults } =
+    useTestStore();
 
   console.log("Results Page: jobId from params:", jobId);
   console.log("Results Page: email from store:", email);
@@ -33,6 +44,14 @@ export default function ResultsPage({
       console.log("Results Page: email not found, skipping getResults()");
     }
   }, [email, getResults]);
+
+  React.useEffect(() => {
+    if (result) {
+      console.log("Backend Response for Results:", JSON.stringify(result, null, 2));
+    }
+  }, [result]);
+
+  
 
   if (resultLoading) {
     console.log("Results Page: loading...");
@@ -98,6 +117,17 @@ export default function ResultsPage({
   return (
     <div className="min-h-screen text-white bg-[radial-gradient(60%_60%_at_50%_0%,#0D0B1E_0%,#070712_60%)]">
       <div className="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8 py-12">
+        <div className="mb-6">
+          <Link href="/assignments">
+            <Button
+              variant="outline"
+              className="border-white/20 bg-transparent hover:bg-white/10 hover:text-white"
+            >
+              <ArrowLeft size={16} className="mr-2" />
+              Back to Assignments
+            </Button>
+          </Link>
+        </div>
         <Card className="text-white p-6 sm:p-8 rounded-3xl border-white/10 bg-white/5 backdrop-blur-xl">
           <div className="flex flex-col sm:flex-row items-start justify-between gap-4 mb-6">
             <div>
@@ -152,49 +182,88 @@ export default function ResultsPage({
           <div>
             <h3 className="font-semibold mb-4 text-xl">Answer Details</h3>
             <div className="space-y-4">
-              {result.answers.map((ans, i) => (
-                <div
-                  key={ans.questionId}
-                  className="p-4 rounded-xl border border-white/10 bg-white/5"
-                >
-                  <div className="flex justify-between items-start">
-                    <p className="font-medium mb-2">Question {i + 1}</p>
-                    {ans.manualScore !== undefined && (
-                      <p className="text-sm">
-                        Score:{" "}
-                        <span className="font-semibold text-sky-400">
-                          {ans.manualScore}
-                        </span>
-                      </p>
+              {(result.answers as Answer[]).map((ans, i) => {
+                let score = ans.manualScore;
+
+                // For MCQs, calculate score based on `correctAnswer`
+                if (ans.correctAnswer !== undefined) {
+                  score =
+                    ans.answer === ans.correctAnswer
+                      ? ans.pointsPerQuestion
+                      : 0;
+                }
+
+                const isMcqWrong =
+                  ans.correctAnswer !== undefined &&
+                  ans.answer !== ans.correctAnswer;
+
+                const isCorrect =
+                  ans.correctAnswer !== undefined &&
+                  ans.answer === ans.correctAnswer;
+
+                return (
+                  <div
+                    key={ans.questionId}
+                    className={`p-4 rounded-2xl border ${
+                      isCorrect
+                        ? "border-emerald-500/30 bg-emerald-500/10"
+                        : "border-white/10 bg-white/5"
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <p className="font-medium mb-2">Question {i + 1}</p>
+                      {score !== undefined && (
+                        <p
+                          className={`text-sm font-semibold ${
+                            isCorrect ? "text-emerald-400" : "text-sky-400"
+                          }`}
+                        >
+                          Score: {score}
+                        </p>
+                      )}
+                    </div>
+                    <p className="text-slate-300 bg-black/20 p-3 rounded-lg mb-2 whitespace-pre-wrap">
+                      Your answer: {ans.answer}
+                    </p>
+
+                    {isMcqWrong && (
+                      <div className="p-3 rounded-lg bg-red-500/10 border border-red-500/20">
+                        <p className="font-semibold text-red-400 text-sm mb-1">
+                          Correct Answer
+                        </p>
+                        <p className="text-white/90 text-sm">
+                          {ans.correctAnswer}
+                        </p>
+                      </div>
+                    )}
+
+                    {ans.modelAnswer && (
+                      <div className="p-3 rounded-lg bg-sky-500/10 border border-sky-500/20 mt-2">
+                        <p className="font-semibold text-sky-400 text-sm mb-1">
+                          Model Answer
+                        </p>
+                        <p className="text-white/90 text-sm whitespace-pre-wrap">
+                          {ans.modelAnswer}
+                        </p>
+                      </div>
+                    )}
+
+                    {ans.notes && (
+                      <div className="p-3 rounded-lg bg-amber-500/10 border border-amber-500/20 mt-2">
+                        <p className="font-semibold text-amber-400 text-sm mb-1">
+                          Notes from grader
+                        </p>
+                        <p className="text-white/90 text-sm whitespace-pre-wrap">
+                          {ans.notes}
+                        </p>
+                      </div>
                     )}
                   </div>
-                  <p className="text-white/80 bg-white/5 p-3 rounded-lg mb-2">
-                    {ans.answer}
-                  </p>
-                  {ans.notes && (
-                    <div className="p-3 rounded-lg bg-sky-500/10 border border-sky-500/20">
-                      <p className="font-semibold text-sky-400 text-sm mb-1">
-                        Notes from grader
-                      </p>
-                      <p className="text-white/90 text-sm">{ans.notes}</p>
-                    </div>
-                  )}
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
         </Card>
-        <div className="mt-6 text-center">
-          <Link href="/assignments">
-            <Button
-              variant="outline"
-              className="border-white/20 bg-transparent hover:bg-white/10"
-            >
-              <ArrowLeft size={16} className="mr-2" />
-              Back to Assignments
-            </Button>
-          </Link>
-        </div>
       </div>
     </div>
   );
