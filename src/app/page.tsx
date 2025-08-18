@@ -11,6 +11,7 @@ import {
   AccordionContent,
 } from "@/components/ui/accordion";
 import { Input } from "@/components/ui/input";
+import Link from "next/link";
 import {
   Check,
   Shield,
@@ -53,7 +54,7 @@ export default function Home() {
               Jobsforce Tests
             </span>
           </div>
-          <nav className="hidden md:flex items-center gap-8 text-sm/none text-white/80">
+          <nav className="hidden md:flex items-center gap-8 text-sm/none text-slate-200">
             <a href="#features" className="hover:text-white transition">
               Features
             </a>
@@ -68,15 +69,19 @@ export default function Home() {
             </a>
           </nav>
           <div className="flex items-center gap-3">
-            <Button
-              variant="ghost"
-              className="hidden sm:inline-flex text-white/80 hover:text-white"
-            >
-              Sign in
-            </Button>
-            <Button className="bg-gradient-to-r from-sky-400 to-violet-500 hover:from-sky-300 hover:to-violet-400 shadow-lg shadow-violet-600/20">
-              Get started
-            </Button>
+            <Link href="/login">
+              <Button
+                variant="ghost"
+                className="hidden sm:inline-flex text-slate-200 hover:text-white"
+              >
+                Sign in
+              </Button>
+            </Link>
+            <Link href="/login">
+              <Button className="bg-gradient-to-r from-sky-400 to-violet-500 hover:from-sky-300 hover:to-violet-400 shadow-lg shadow-violet-600/20">
+                Get started
+              </Button>
+            </Link>
           </div>
         </div>
       </header>
@@ -91,7 +96,7 @@ export default function Home() {
               animate="animate"
               className="space-y-6"
             >
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-white/80">
+              <div className="inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/5 px-3 py-1 text-xs text-slate-200">
                 <Sparkles className="h-3.5 w-3.5" />
                 Smarter hiring starts with better tests
               </div>
@@ -102,28 +107,33 @@ export default function Home() {
                 </span>{" "}
                 skills
               </h1>
-              <p className="text-white/70 max-w-xl">
+              <p className="text-slate-200 max-w-xl">
                 A fast, bias‑aware, and scalable assessment platform tailor‑made
                 for Jobsforce hiring. From coding to system design and
                 job‑specific scenarios—see who can actually do the work.
               </p>
               <div className="flex flex-col sm:flex-row gap-3">
-                <Button
-                  size="lg"
-                  className="bg-gradient-to-r from-sky-400 to-violet-500 hover:from-sky-300 hover:to-violet-400"
-                >
-                  Create your first test <ArrowRight className="ml-2 h-4 w-4" />
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="border-white/20 bg-white/5 hover:bg-white/10"
-                >
-                  View sample
-                </Button>
+                <Link href="/login">
+                  <Button
+                    size="lg"
+                    className="bg-gradient-to-r from-sky-400 to-violet-500 hover:from-sky-300 hover:to-violet-400 transition-transform hover:scale-105"
+                  >
+                    Create your first test{" "}
+                    <ArrowRight className="ml-2 h-4 w-4" />
+                  </Button>
+                </Link>
+                <Link href="/login">
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="border-white/20 bg-white/5 hover:bg-white/15 hover:border-white/30 transition-all"
+                  >
+                    View sample
+                  </Button>
+                </Link>
               </div>
               {/* Trust signals */}
-              <div className="flex items-center gap-6 pt-2 text-white/60">
+              <div className="flex items-center gap-6 pt-2 text-slate-300">
                 <div className="flex items-center gap-2">
                   <Shield className="h-4 w-4" /> Anti‑cheat
                 </div>
@@ -144,35 +154,58 @@ export default function Home() {
               className="relative"
             >
               <div className="absolute -inset-6 rounded-3xl bg-gradient-to-br from-sky-400/20 via-purple-500/10 to-fuchsia-500/20 blur-2xl" />
-              <Card className="relative rounded-3xl border-white/10 bg-white/5 backdrop-blur-xl shadow-2xl">
-                <CardHeader className="pb-2">
-                  <CardTitle className="text-white/90 text-lg">
-                    Live Preview — Coding Test
+              <Card className="relative rounded-3xl border-white/10 bg-slate-900/60 backdrop-blur-xl shadow-2xl overflow-hidden">
+                <CardHeader className="pb-2 bg-white/5 border-b border-white/10">
+                  <CardTitle className="text-slate-200 text-base flex items-center gap-2">
+                    <div className="h-3 w-3 rounded-full bg-emerald-400 animate-pulse" />
+                    Live Assessment Preview
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="rounded-xl border border-white/10 bg-black/60 p-4">
-                    <div className="flex items-center gap-2 text-xs text-white/60 pb-3">
-                      <div className="h-2.5 w-2.5 rounded-full bg-emerald-400" />
-                      Candidate session active · Proctoring on
-                    </div>
-                    <div className="rounded-lg border border-white/10 bg-black/40 p-3 text-sm font-mono">
-                      {`// Implement a rate limiter for API requests\n// Node.js + Redis pseudocode, O(1) per request\nfunction isAllowed(userId) { /* ... */ }`}
-                    </div>
+                <CardContent className="p-5 space-y-4">
+                  {/* Question Prompt */}
+                  <div className="rounded-lg bg-black/30 p-3">
+                    <p className="text-sm font-medium text-slate-200">
+                      Q1: Implement a rate limiter
+                    </p>
+                    <p className="text-xs text-slate-400">
+                      Practical coding challenge
+                    </p>
                   </div>
 
-                  <div className="grid grid-cols-3 gap-3">
-                    <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                      <div className="text-xs text-white/60 mb-1">Score</div>
-                      <div className="text-2xl font-semibold">87</div>
+                  {/* Candidate's code with syntax highlighting colors (mocked) */}
+                  <div className="rounded-lg border border-white/10 bg-black/40 p-3 text-sm font-mono text-slate-300">
+                    <span className="text-purple-400">function</span>{" "}
+                    <span className="text-sky-400">isAllowed</span>(
+                    <span className="text-amber-400">userId</span>) {"{"}
+                    <br />
+                    {"  "}
+                    <span className="text-purple-400">return</span>{" "}
+                    <span className="text-amber-400">true</span>;
+                    <br />
+                    {"}"}
+                  </div>
+
+                  {/* Results section */}
+                  <div className="flex items-center justify-between gap-4 pt-2">
+                    <div className="flex-1">
+                      <div className="flex justify-between text-xs text-slate-300 mb-1">
+                        <span>Overall Score</span>
+                        <span className="font-semibold text-white">
+                          87/100
+                        </span>
+                      </div>
+                      <div className="w-full bg-white/10 rounded-full h-2">
+                        <div
+                          className="bg-gradient-to-r from-sky-400 to-violet-500 h-2 rounded-full"
+                          style={{ width: "87%" }}
+                        />
+                      </div>
                     </div>
-                    <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                      <div className="text-xs text-white/60 mb-1">Speed</div>
-                      <div className="text-2xl font-semibold">Top 12%</div>
-                    </div>
-                    <div className="rounded-xl border border-white/10 bg-white/5 p-3">
-                      <div className="text-xs text-white/60 mb-1">Signal</div>
-                      <div className="text-2xl font-semibold">Strong</div>
+                    <div className="text-center">
+                      <div className="text-xs text-slate-400">Signal</div>
+                      <div className="text-lg font-bold text-emerald-400">
+                        Strong
+                      </div>
                     </div>
                   </div>
                 </CardContent>
@@ -204,7 +237,7 @@ export default function Home() {
                 className="rounded-2xl border border-white/10 bg-white/5 p-5 text-center"
               >
                 <div className="text-2xl font-semibold">{i.value}</div>
-                <div className="text-white/60 text-sm">{i.label}</div>
+                <div className="text-slate-400 text-sm">{i.label}</div>
               </motion.div>
             ))}
           </motion.div>
@@ -224,7 +257,7 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl font-bold">
               Built for hiring that scales
             </h2>
-            <p className="text-white/70 max-w-2xl mx-auto mt-3">
+            <p className="text-slate-300 max-w-2xl mx-auto mt-3">
               Craft role‑specific tests in minutes, auto‑proctor sessions, and
               get signal‑rich reports your team can trust.
             </p>
@@ -270,14 +303,18 @@ export default function Home() {
               },
             ].map((f, idx) => (
               <motion.div key={idx} variants={fadeUp}>
-                <Card className="h-full rounded-2xl border-white/10 bg-white/5 backdrop-blur-xl">
-                  <CardHeader className="flex flex-row items-center gap-3 pb-2">
-                    <div className="grid place-items-center h-10 w-10 rounded-xl bg-gradient-to-br from-sky-400/20 to-violet-500/20 border border-white/10">
+                <Card className="h-full rounded-2xl border-white/10 bg-slate-900/60 backdrop-blur-xl transition-all hover:bg-slate-800/80 hover:-translate-y-1">
+                  <CardHeader className="flex flex-row items-center gap-4 pb-3">
+                    <div className="grid place-items-center h-10 w-10 rounded-xl bg-gradient-to-br from-sky-500 to-violet-600 border border-white/10">
                       {f.icon}
                     </div>
-                    <CardTitle className="text-base">{f.title}</CardTitle>
+                    <CardTitle className="text-base text-slate-100">
+                      {f.title}
+                    </CardTitle>
                   </CardHeader>
-                  <CardContent className="text-white/70">{f.desc}</CardContent>
+                  <CardContent className="text-slate-300 text-sm">
+                    {f.desc}
+                  </CardContent>
                 </Card>
               </motion.div>
             ))}
@@ -298,7 +335,7 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl font-bold">
               From idea to shortlist in minutes
             </h2>
-            <p className="text-white/70 max-w-2xl mx-auto mt-3">
+            <p className="text-slate-300 max-w-2xl mx-auto mt-3">
               Spin up a new role, send a link, and watch qualified candidates
               bubble to the top.
             </p>
@@ -324,15 +361,19 @@ export default function Home() {
             ].map((s, idx) => (
               <Card
                 key={idx}
-                className="rounded-2xl border-white/10 bg-white/5 backdrop-blur-xl"
+                className="rounded-2xl border-white/10 bg-slate-900/60 backdrop-blur-xl transition-all hover:bg-slate-800/80 hover:-translate-y-1"
               >
-                <CardHeader className="flex flex-row items-center gap-3 pb-2">
-                  <div className="grid place-items-center h-10 w-10 rounded-xl bg-gradient-to-br from-sky-400/20 to-violet-500/20 border border-white/10">
+                <CardHeader className="flex flex-row items-center gap-4 pb-3">
+                  <div className="grid place-items-center h-10 w-10 rounded-xl bg-gradient-to-br from-sky-500 to-violet-600 border border-white/10">
                     {s.icon}
                   </div>
-                  <CardTitle className="text-base">{s.title}</CardTitle>
+                  <CardTitle className="text-base text-slate-100">
+                    {s.title}
+                  </CardTitle>
                 </CardHeader>
-                <CardContent className="text-white/70">{s.desc}</CardContent>
+                <CardContent className="text-slate-300 text-sm">
+                  {s.desc}
+                </CardContent>
               </Card>
             ))}
           </div>
@@ -352,7 +393,7 @@ export default function Home() {
             <h2 className="text-3xl sm:text-4xl font-bold">
               Assessment categories
             </h2>
-            <p className="text-white/70 max-w-2xl mx-auto mt-3">
+            <p className="text-slate-300 max-w-2xl mx-auto mt-3">
               Hand‑crafted banks aligned to your roles. Mix and match to mirror
               day‑to‑day work.
             </p>
@@ -392,13 +433,15 @@ export default function Home() {
             ].map((c, idx) => (
               <Card
                 key={idx}
-                className="rounded-2xl border-white/10 bg-white/5 backdrop-blur-xl"
+                className="rounded-2xl border-white/10 bg-slate-900/60 backdrop-blur-xl transition-all hover:bg-slate-800/80 hover:-translate-y-1"
               >
                 <CardHeader>
-                  <CardTitle className="text-base">{c.title}</CardTitle>
+                  <CardTitle className="text-base text-slate-100">
+                    {c.title}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent>
-                  <ul className="grid grid-cols-2 gap-2 text-white/70 text-sm">
+                  <ul className="grid grid-cols-2 gap-2 text-slate-300 text-sm">
                     {c.items.map((it) => (
                       <li key={it} className="flex items-center gap-2">
                         <Check className="h-4 w-4 text-sky-400" /> {it}
@@ -423,18 +466,20 @@ export default function Home() {
                 <h3 className="text-2xl sm:text-3xl font-bold">
                   Start assessing in under 5 minutes
                 </h3>
-                <p className="text-white/70 mt-2 max-w-xl">
+                <p className="text-slate-300 mt-2 max-w-xl">
                   Plug in your role, pick your sections, and share an invite
                   link. We’ll handle the rest.
                 </p>
                 <div className="mt-4 flex flex-col sm:flex-row gap-3">
-                  <Button
-                    size="lg"
-                    className="bg-gradient-to-r from-sky-400 to-violet-500 hover:from-sky-300 hover:to-violet-400"
-                  >
-                    Create a test
-                  </Button>
-                  <div className="flex items-center gap-2 text-white/70 text-sm">
+                  <Link href="/login">
+                    <Button
+                      size="lg"
+                      className="bg-gradient-to-r from-sky-400 to-violet-500 hover:from-sky-300 hover:to-violet-400"
+                    >
+                      Create a test
+                    </Button>
+                  </Link>
+                  <div className="flex items-center gap-2 text-slate-300 text-sm">
                     <div className="h-6 w-6 rounded-md bg-white/10 grid place-items-center border border-white/10">
                       ✓
                     </div>
@@ -443,14 +488,14 @@ export default function Home() {
                 </div>
               </div>
               <form className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-4">
-                <div className="text-sm text-white/80 mb-2">
+                <div className="text-sm text-slate-200 mb-2">
                   Want a guided setup? Leave your email.
                 </div>
                 <div className="flex gap-2">
                   <Input
                     type="email"
                     placeholder="you@company.com"
-                    className="bg-white/10 border-white/20 placeholder:text-white/50"
+                    className="bg-white/10 border-white/20 placeholder:text-slate-400"
                   />
                   <Button>Notify me</Button>
                 </div>
@@ -471,7 +516,7 @@ export default function Home() {
             className="text-center mb-10"
           >
             <h2 className="text-3xl sm:text-4xl font-bold">Frequently asked</h2>
-            <p className="text-white/70 mt-3">
+            <p className="text-slate-300 mt-3">
               Everything you need to know about fairness, security, and
               integrations.
             </p>
@@ -484,7 +529,7 @@ export default function Home() {
           >
             <AccordionItem value="item-1">
               <AccordionTrigger>How do you prevent cheating?</AccordionTrigger>
-              <AccordionContent className="text-white/70">
+              <AccordionContent className="text-slate-300">
                 We combine environment checks, live proctoring signals
                 (tab‑switch, copy, face‑away), randomization, and plagiarism
                 detection. Suspicious events are flagged with severity.
@@ -494,7 +539,7 @@ export default function Home() {
               <AccordionTrigger>
                 Can I customize tests for each role?
               </AccordionTrigger>
-              <AccordionContent className="text-white/70">
+              <AccordionContent className="text-slate-300">
                 Yes. Start from curated templates (MERN, Django, DevOps, System
                 Design, and more) or assemble sections. Adjust time, difficulty,
                 and weighting.
@@ -504,14 +549,14 @@ export default function Home() {
               <AccordionTrigger>
                 Does it integrate with Jobsforce and our ATS?
               </AccordionTrigger>
-              <AccordionContent className="text-white/70">
+              <AccordionContent className="text-slate-300">
                 One‑click export to Jobsforce shortlists. We also support
                 CSV/JSON exports and webhooks for custom ATS integrations.
               </AccordionContent>
             </AccordionItem>
             <AccordionItem value="item-4">
               <AccordionTrigger>What does scoring include?</AccordionTrigger>
-              <AccordionContent className="text-white/70">
+              <AccordionContent className="text-slate-300">
                 Beyond pass/fail, you’ll see correctness, code quality, partial
                 credit, time to solve, and rubric‑aligned assessments, plus
                 recommended next steps.
@@ -524,7 +569,7 @@ export default function Home() {
       {/* Footer */}
       <footer className="border-t border-white/10 py-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-white/60">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-slate-400">
             <div className="flex items-center gap-3">
               <div className="h-7 w-7 rounded-xl bg-gradient-to-br from-sky-400 to-violet-500" />
               <span>© {new Date().getFullYear()} Jobsforce Tests</span>

@@ -64,15 +64,22 @@ function AssignmentCard({ assignment }: { assignment: UserAssignment }) {
 
 export default function AssignmentsPage() {
   const router = useRouter();
-  const { email, assignments, loading, getAllAssignments } = useTestStore();
+  const {
+    email,
+    assignments,
+    assignmentsFetched,
+    loading,
+    error,
+    getAllAssignments,
+  } = useTestStore();
 
   React.useEffect(() => {
-    if (email && assignments.length === 0) {
+    if (email && !assignmentsFetched && !error) {
       getAllAssignments(email).catch((err) => {
         toast.error(err?.message || "Failed to load assignments");
       });
     }
-  }, [email, assignments, getAllAssignments]);
+  }, [email, assignmentsFetched, error, getAllAssignments]);
 
   React.useEffect(() => {
     if (!loading && !email) {
