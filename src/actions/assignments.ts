@@ -3,7 +3,7 @@
 import { SubmitResult } from "@/types/test";
 
 export async function submitAssignmentAction(
-  _: any,
+  _: unknown,
   formData: FormData
 ): Promise<SubmitResult> {
   try {
@@ -52,7 +52,8 @@ export async function submitAssignmentAction(
       score: data?.score ?? null,
       nextUrl: data?.nextUrl ?? null,
     };
-  } catch (e: any) {
-    return { ok: false, message: e?.message || "Something went wrong" };
+  } catch (e: unknown) {
+    const message = e instanceof Error ? e.message : "Something went wrong";
+    return { ok: false, message };
   }
 }

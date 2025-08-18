@@ -29,18 +29,49 @@ export type Assignment = {
   sections: Section[];
 };
 
+export type SubmissionResult = {
+  assignmentTitle: string;
+  passingScore: number;
+  status: "submitted" | "grading" | "graded";
+  autoScore: number;
+  manualScore: number;
+  totalScore: number;
+  graderNotes?: string;
+  answers: {
+    questionId: string;
+    answer: string;
+    manualScore?: number;
+    notes?: string;
+  }[];
+};
+
+export type UserAssignment = {
+  jobId: string;
+  jobTitle: string;
+  assignmentId: string;
+  applicationId: string;
+  submissionStatus: "pending" | "submitted" | "grading" | "graded";
+};
+
 type TestState = {
   email: string;
   jobId: string;
   assignment?: Assignment;
+  assignments: UserAssignment[];
   answers: Record<string, string>;
   loading: boolean;
   error?: string;
+  result?: SubmissionResult;
+  resultLoading: boolean;
+  resultError?: string;
 
   setEmail: (email: string) => void;
+  setJobId: (jobId: string) => void;
   setAnswer: (qid: string, val: string) => void;
   startTest: (jobId: string, email?: string) => Promise<void>;
   submitTest: () => Promise<{ ok: boolean; message: string }>;
+  getResults: () => Promise<{ ok: boolean; message: string }>;
+  getAllAssignments: (email: string) => Promise<void>;
   reset: () => void;
 };
 
@@ -52,11 +83,16 @@ export const useTestStore = create<TestState>()(
       email: "",
       jobId: "",
       assignment: undefined,
+      assignments: [],
       answers: {},
       loading: false,
       error: undefined,
+      result: undefined,
+      resultLoading: false,
+      resultError: undefined,
 
       setEmail: (email) => set({ email }),
+      setJobId: (jobId) => set({ jobId }),
       setAnswer: (qid, val) =>
         set((s) => ({ answers: { ...s.answers, [qid]: val } })),
 
@@ -96,10 +132,11 @@ export const useTestStore = create<TestState>()(
             error: undefined,
             answers: {}, // fresh start
           });
-        } catch (e: any) {
+        } catch (e: unknown) {
+          const message = e instanceof Error ? e.message : "Failed to start test";
           set({
             loading: false,
-            error: e?.message || "Failed to start test",
+            error: message,
           });
           throw e;
         }
@@ -151,19 +188,85 @@ export const useTestStore = create<TestState>()(
             return { ok: false, message: json?.message || "Submission failed" };
           }
           return { ok: true, message: json?.message || "Submitted" };
-        } catch (e: any) {
-          return { ok: false, message: e?.message || "Submission failed" };
+        } catch (e: unknown) {
+          const message = e instanceof Error ? e.message : "Submission failed";
+          return { ok: false, message };
+        }
+      },
+
+      getResults: async () => {
+        const { jobId, email } = get();
+        console.log("getResults: trying to fetch for", { jobId, email });
+        if (!jobId || !email) {
+          console.log("getResults: missing jobId or email");
+          return { ok: false, message: "Missing job id or email" };
+        }
+
+        set({ resultLoading: true, resultError: undefined });
+        try {
+          const url = `${API_BASE}/api/v1/assignment/jobs/${jobId}/result`;
+          console.log("getResults: fetching from URL:", url);
+          const res = await fetch(url, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email }),
+          });
+          const json = await res.json();
+          console.log("getResults: API response JSON:", json);
+
+          if (!res.ok) {
+            throw new Error(json.message || "Failed to fetch results");
+          }
+
+          console.log("getResults: success, setting result in store");
+          set({ result: json.data, resultLoading: false });
+          return { ok: true, message: "Results loaded" };
+        } catch (error: unknown) {
+          const message =
+            error instanceof Error
+              ? error.message
+              : "Failed to fetch results";
+          console.error("getResults: error fetching results:", message);
+          set({ resultLoading: false, resultError: message });
+          return { ok: false, message };
+        }
+      },
+
+      getAllAssignments: async (email) => {
+        set({ loading: true, error: undefined });
+        try {
+          const res = await fetch(
+            `${API_BASE}/api/v1/assignment/my-assignments`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ email }),
+            }
+          );
+          const json = await res.json();
+          if (!res.ok) {
+            throw new Error(json.message || "Failed to fetch assignments");
+          }
+          set({ assignments: json.data, loading: false });
+        } catch (error: unknown) {
+          const message =
+            error instanceof Error
+              ? error.message
+              : "Failed to fetch assignments";
+          set({ loading: false, error: message });
+          throw error;
         }
       },
 
       reset: () =>
         set({
-          email: "",
-          jobId: "",
           assignment: undefined,
           answers: {},
           loading: false,
           error: undefined,
+          result: undefined,
+          resultLoading: false,
+          resultError: undefined,
         }),
     }),
     {

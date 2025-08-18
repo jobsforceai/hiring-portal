@@ -16,7 +16,7 @@ export function useLocalAnswers(jobId: string) {
   useEffect(() => {
     if (typeof window === "undefined") return;
     localStorage.setItem(key, JSON.stringify(answers));
-  }, [answers]);
+  }, [answers, key]);
 
   const reset = () => {
     if (typeof window !== "undefined") localStorage.removeItem(key);

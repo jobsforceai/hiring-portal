@@ -82,7 +82,7 @@ export default function SectionPanel({
     } else if (state.message) {
       toast.error(state.message);
     }
-  }, [state]);
+  }, [state, reset]);
 
   return (
     <form action={formAction} className="space-y-6">

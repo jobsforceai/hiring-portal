@@ -10,28 +10,23 @@ import { Label } from "@/components/ui/label";
 import { Mail } from "lucide-react";
 import { useTestStore } from "@/store/testScore";
 
-export default function LoginPage({
-  params,
-}: {
-  params: Promise<{ jobId: string }>;
-}) {
-  const { jobId } = React.use(params);
+export default function CommonLoginPage() {
   const router = useRouter();
-  const { setEmail, startTest, loading } = useTestStore();
-  const [email, setEmailInput] = React.useState("");
+  const { setEmail, getAllAssignments, loading } = useTestStore();
+  const [emailInput, setEmailInput] = React.useState("");
 
   const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!email) {
+    if (!emailInput) {
       toast.error("Please enter your email");
       return;
     }
     try {
-      setEmail(email);
-      await startTest(jobId, email); // fetch assignment & persist it
-      router.replace(`/jobs/${jobId}`);
+      setEmail(emailInput);
+      await getAllAssignments(emailInput);
+      router.replace(`/assignments`);
     } catch (err: unknown) {
-      const message = err instanceof Error ? err.message : "Could not start the test";
+      const message = err instanceof Error ? err.message : "Could not log in";
       toast.error(message);
     }
   };
@@ -40,9 +35,9 @@ export default function LoginPage({
     <div className="min-h-screen grid place-items-center p-6 text-white bg-[radial-gradient(60%_60%_at_50%_0%,#2A244A_0%,#0B0B18_60%)]">
       <Card className="text-white w-full max-w-md rounded-3xl border-white/10 bg-white/5 backdrop-blur-xl">
         <CardHeader>
-          <CardTitle className="text-2xl">Continue to your test</CardTitle>
+          <CardTitle className="text-2xl">Applicant Login</CardTitle>
           <p className="text-sm text-white/70">
-            Enter your email to fetch your assignment.
+            Enter your email to see your assignments.
           </p>
         </CardHeader>
         <CardContent>
@@ -56,7 +51,7 @@ export default function LoginPage({
                   name="email"
                   type="email"
                   required
-                  value={email}
+                  value={emailInput}
                   onChange={(e) => setEmailInput(e.target.value)}
                   placeholder="you@company.com"
                   className="pl-9 bg-white/10 border-white/20 placeholder:text-white/50 text-white"
