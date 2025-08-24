@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,6 +26,7 @@ import {
   Users,
   Rocket,
 } from "lucide-react";
+import { toast } from "sonner";
 
 const fadeUp = {
   initial: { opacity: 0, y: 20 },
@@ -49,7 +51,13 @@ export default function Home() {
       <header className="sticky top-0 z-40 backdrop-blur supports-[backdrop-filter]:bg-white/5 bg-white/5 border-b border-white/10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="h-8 w-8 rounded-xl bg-gradient-to-br from-sky-400 to-violet-500 shadow-md" />
+            <Image
+              src="/logo-3d.png"
+              alt="logo"
+              width={32}
+              height={32}
+              className="h-12 w-12 rounded-xl shadow-md"
+            />
             <span className="text-lg font-semibold tracking-tight">
               Jobsforce Tests
             </span>
@@ -72,7 +80,7 @@ export default function Home() {
             <Link href="/login">
               <Button
                 variant="ghost"
-                className="hidden sm:inline-flex text-slate-200 hover:text-white"
+                className="hidden sm:inline-flex text-slate-200 cursor-pointer hover:text-black"
               >
                 Sign in
               </Button>
@@ -118,7 +126,7 @@ export default function Home() {
                     size="lg"
                     className="bg-gradient-to-r from-sky-400 to-violet-500 hover:from-sky-300 hover:to-violet-400 transition-transform hover:scale-105"
                   >
-                    Create your first test{" "}
+                    Start your first test{" "}
                     <ArrowRight className="ml-2 h-4 w-4" />
                   </Button>
                 </Link>
@@ -476,7 +484,7 @@ export default function Home() {
                       size="lg"
                       className="bg-gradient-to-r from-sky-400 to-violet-500 hover:from-sky-300 hover:to-violet-400"
                     >
-                      Create a test
+                      Attend your test
                     </Button>
                   </Link>
                   <div className="flex items-center gap-2 text-slate-300 text-sm">
@@ -487,7 +495,13 @@ export default function Home() {
                   </div>
                 </div>
               </div>
-              <form className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-4">
+              <form
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  toast.success("You will be notified soon!");
+                }}
+                className="rounded-2xl border border-white/10 bg-white/5 backdrop-blur-xl p-4"
+              >
                 <div className="text-sm text-slate-200 mb-2">
                   Want a guided setup? Leave your email.
                 </div>
@@ -571,7 +585,13 @@ export default function Home() {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-6 text-sm text-slate-400">
             <div className="flex items-center gap-3">
-              <div className="h-7 w-7 rounded-xl bg-gradient-to-br from-sky-400 to-violet-500" />
+              <Image
+                src="/logo-3d.png"
+                alt="logo"
+                width={28}
+                height={28}
+                className="h-7 w-7 rounded-xl bg-gradient-to-br from-sky-400 to-violet-500"
+              />
               <span>© {new Date().getFullYear()} Jobsforce Tests</span>
             </div>
             <div className="flex items-center gap-6">
